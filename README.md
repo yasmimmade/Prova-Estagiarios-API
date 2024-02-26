@@ -31,7 +31,15 @@
 ```bash
 $ npm install
 ```
+## Node version recomendada: 18.12.0
 
+O servidor roda na porta: http://localhost:3000/
+
+Link para o swagger: http://localhost:3000/docs/
+
+- Crie uma conexão local no banco e crie uma base de dados chamada 'db-mercado' 
+- crie um arquivo .env seguindo o .env.example e substitua pelas credenciais do seu banco local
+  
 ## Running the app
 
 ```bash
@@ -45,29 +53,35 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+### Após rodar teste se as tabelas foram criadas na sua conexão no banco
 
-```bash
-# unit tests
-$ npm run test
+## Descrição
 
-# e2e tests
-$ npm run test:e2e
+Foi desenvolvida uma API para gerenciamento de usuários e produtos. Durante a implementação, foram identificadas oportunidades de melhoria, correções de bugs e a necessidade de novas implementações.
 
-# test coverage
-$ npm run test:cov
-```
 
-## Support
+## Tarefas -- Usuario
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Teste algumas rotas para se familiarizar com o projeto e entender seu padrão de funcionamento, leve em consideração que há um exemplo de tudo a ser feito dentro do projeto.
+- No arquivo *usuario.service.ts*, dentro da pasta de usuário, existe um método chamado listarUsuariosPorNome. No entanto, este método não possui uma rota correspondente no arquivo *usuario.controller.ts*. Implemente uma rota para acessar este método. DICA: Use como base a rota buscarUsuarioId e listarUsuarios.
+- No método criarUsuario dentro da service, desejo que o usuário só possa inserir uma senha com mais de 6 dígitos e menos de 11 dígitos, contendo pelo menos um número e uma letra maiúscula. Além disso, não quero que seja possível adicionar um usuário com um email que já exista na base de dados. Ao finalizar com sucesso, desejo que retorne a mensagem "Usuário criado com sucesso".
+- No método listarUsuarios, se não existir nenhum usuário cadastrado na base, desejo que retorne um erro 404 (NotFoundException) com a seguinte mensagem: 'Nenhum usuário cadastrado na base'.
+- No método atualizarUsuario, desejo que seja possível encontrar o usuário pelo ID enviado na rota. Se o usuário não for encontrado, deve ser retornado um erro 404 com a mensagem 'Usuário não encontrado'. Além disso, as linhas comentadas nesse método devem ser descomentadas. A mesma regra da criação do usuário deve ser aplicada, ou seja, não deve ser aceito um email já existente na base. Caso seja bem-sucedido, gostaria que fosse retornado a mensagem 'Usuário editado com sucesso'.
+- No método deletarUsuario, há um bug que, em um caso, retorna erro 500 da API. Desejo que seja identificado e corrigido
 
-## Stay in touch
+  ## Tarefas -- Produto
+Tarefas serão realizadas na pasta produto na *produto.controller.ts* e na *produto.service.ts*
+*Levar em conta que categorias já estão cadastradas na base com IDs correspondentes:*
+1	Eletrônicos
+2	Roupas
+3	Livros
+4	Alimentos
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+- Criar uma rota para listar todos os produtos da base ordenados pelo nome.
+- Criar uma rota para buscar um produto por id
+- Criar uma rota para cadastrar um produto, não pode ser cadastrado produtos com nomes iguais.
+- Criar uma rota para deletar produto
+- Criar uma rota para atualizar produto
+- Criar uma rota que retorne produtos sem estoque
+- No método totalProdutos, desejo que retorne o número total de produtos existentes na base de dados, ao invés de um número fixo.
+- Existe uma rota e um método chamado listarProdutosCategoria, mas ainda não há implementação. Utilizando o response ListarProdutosCategoriaResponse, gostaria que fossem retornados os produtos por categoria.
