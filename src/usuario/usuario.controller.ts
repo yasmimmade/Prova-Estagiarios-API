@@ -34,6 +34,12 @@ export class UsuarioController {
     return this.usuarioService.buscarUsuarioId(id);
   }
 
+  @Get('like/:nome')
+  @ApiResponse( {status: 200, type: UsuariosResponse })
+  buscarUsuarioNome(@Param('nome') nome: string) {
+    return this.usuarioService.listarUsuariosPorNome(nome)
+  }
+
   @Post()
   @ApiResponse({ status: 201 })
   @ApiBody({ type: CriarUsuarioDto })

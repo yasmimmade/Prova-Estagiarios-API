@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from 'src/database/entities/Usuario';
 import { Like, Repository } from 'typeorm';
@@ -26,6 +26,8 @@ export class UsuarioService {
       },
     });
 
+    if(usuariosExistentes.length == 0) throw new NotFoundException("Nenhum usuário cadastrado na base!")
+
     const response = new ListarUsuariosResponse();
 
     response.usuarios = plainToClass(UsuariosResponse, usuariosExistentes);
@@ -52,7 +54,7 @@ export class UsuarioService {
   async buscarUsuarioId(id: number): Promise<UsuariosResponse> {
     // Retorna usuario com o id fornecido
     const usuarioExistente = await this.usuarioRepository.findOne({
-      where: { id },
+      where: { id }
     });
 
     if (!usuarioExistente) {
@@ -66,6 +68,7 @@ export class UsuarioService {
 
   async criarUsuario(usuarioDto: CriarUsuarioDto) {
     const { nome, email, senha } = usuarioDto;
+    await this.verificarEmail(email)
     try {
       // Criptografando a senha recebida
       const senhaCriptografada = await bcrypt.hash(senha, 10); // 10 é o custo do hash, quanto maior, mais seguro
@@ -75,19 +78,25 @@ export class UsuarioService {
       novoUsuario.nome = nome;
       novoUsuario.email = email;
       novoUsuario.senha = senhaCriptografada;
-
+      
       //Salvando Usuario criado no banco
       await this.usuarioRepository.save(novoUsuario);
+      return { messagem: "Usuário cadastrado com sucesso" }
     } catch (e) {
       throw new Error(`Erro ao criar usuário: ${e.message}`);
     }
   }
 
   async atualizarUsuario(id: number, editarUsuarioDto: EditarUsuarioDto) {
+    const usuarioExistente = await this.usuarioRepository.findOneBy({
+      id: id
+    })
+    await this.verificarEmail(editarUsuarioDto.email)
     try {
-      // usuarioExistente.nome = usuarioDto.nome;
-      // usuarioExistente.email = usuarioDto.email;
-      //   await this.usuarioRepository.save(usuarioExistente);
+      usuarioExistente.nome = editarUsuarioDto.nome;
+      usuarioExistente.email = editarUsuarioDto.email;
+      await this.usuarioRepository.save(usuarioExistente);
+      return { mensagem: "Usuário atualizado com sucesso!" }
     } catch (e) {
       throw new Error(`Erro ao atualizar usuário: ${e.message}`);
     }
@@ -96,12 +105,19 @@ export class UsuarioService {
   async deletarUsuario(id: number) {
     try {
       const usuarioExistente = await this.usuarioRepository.findOne({
-        where: { id },
+        where: { id }
       });
-
       await this.usuarioRepository.softRemove(usuarioExistente);
+      return { mensagem: "Usuário deletado com sucesso!" }
     } catch (e) {
       throw new Error(`Erro ao deletar usuário: ${e.message}`);
     }
+  }
+
+  async verificarEmail(email: string) {
+    const usuarioExistente = await this.usuarioRepository.findOneBy({
+      email: email
+    })
+    if(usuarioExistente) throw new ConflictException("E-mail já cadastrado")
   }
 }
