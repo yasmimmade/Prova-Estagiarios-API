@@ -38,7 +38,14 @@ export class UsuarioController {
   @ApiResponse({ status: 201 })
   @ApiBody({ type: CriarUsuarioDto })
   criarUsuario(@Body(ValidationPipe) criarUsuarioDto: CriarUsuarioDto) {
-    return this.usuarioService.criarUsuario(criarUsuarioDto);
+    this.usuarioService.criarUsuario(criarUsuarioDto)
+    return "Usuário criado com sucesso"
+  }
+
+  @Get('by/name/:nome')
+  @ApiResponse({ status: 200, type: UsuariosResponse })
+  listarUsuariosPorNome(@Param('nome') nome: string): Promise<ListarUsuariosResponse>{
+    return this.usuarioService.listarUsuariosPorNome(nome);
   }
 
   @Patch(':id')
@@ -47,16 +54,16 @@ export class UsuarioController {
     @Param('id') id: number,
     @Body(ValidationPipe) editarUsuarioDto: EditarUsuarioDto,
   ) {
-    const usuarioAtualizado = await this.usuarioService.atualizarUsuario(
-      id,
-      editarUsuarioDto,
-    );
-    return usuarioAtualizado;
+    await this.usuarioService.atualizarUsuario(id, editarUsuarioDto);
+
+    return 'Usuário editado com sucesso';
   }
 
   @Delete(':id')
   @ApiResponse({ status: 200 })
   deletarUsuario(@Param('id') id: number) {
-    return this.usuarioService.deletarUsuario(id);
+    this.usuarioService.deletarUsuario(id);
+
+    return "Usuário deletado com sucesso"
   }
 }

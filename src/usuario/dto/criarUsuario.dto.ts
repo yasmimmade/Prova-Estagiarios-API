@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsDefined, IsEmail, IsString } from 'class-validator';
+import { IsDefined, IsEmail, IsString, IsStrongPassword, MaxLength, } from 'class-validator';
 
 export class CriarUsuarioDto {
   @Expose()
@@ -19,5 +19,7 @@ export class CriarUsuarioDto {
   @ApiProperty({ example: 'senha' })
   @IsDefined()
   @IsString()
+  @MaxLength(11)
+  @IsStrongPassword({minSymbols: 0, minLength: 6, minUppercase: 1, minNumbers: 1})
   senha: string;
 }
