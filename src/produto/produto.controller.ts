@@ -36,6 +36,12 @@ export class ProdutoController {
     return this.produtoService.buscarProdutoId(id)
   }
 
+  @Get('semestoque')
+  @ApiResponse({ status: 200, type: ListarProdutosResponse })
+  listarSemEstoque(): Promise<ListarProdutosResponse> {
+    return this.produtoService.listarSemEstoque()
+  }
+
   @Post()
   @ApiResponse({ status: 201 })
   @ApiBody({ type: ProdutoResponse })

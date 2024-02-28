@@ -40,6 +40,33 @@ export class ProdutoService {
     return response;
   }
 
+  async listarSemEstoque(): Promise<ListarProdutosResponse> {
+    const produtosExistentes = await this.produtoRepository.find({
+      where: { estoque: 0 }
+    })
+
+    if(produtosExistentes.length == 0) throw new NotFoundException("Nenhum produto com estoque zerado na base!");
+
+    const response = new ListarProdutosResponse();
+    response.produtos = plainToClass(ProdutosResponse, produtosExistentes);
+
+    return response
+  }
+
+  async listarProdutosCategoria(): Promise<ListarProdutosCategoriaResponse> {
+    const list = new ListarProdutosCategoriaResponse();
+    return list;
+  }
+
+  async totalProdutos(): Promise<TotalProdutosResponse> {
+    //Lista os usuarios ordenando pelo nome
+    const produtosExistentes = await this.produtoRepository.find({});
+
+    const response = new TotalProdutosResponse();
+    response.total = 12;
+    return response;
+  }
+
   async criarProduto(produtoDto: CriarProdutoDto) {
     const { nome, descricao, estoque, valor, categoriaId } = produtoDto;
     await this.verificarNome(nome)
@@ -60,33 +87,11 @@ export class ProdutoService {
     }
   }
 
-  async totalProdutos(): Promise<TotalProdutosResponse> {
-    //Lista os usuarios ordenando pelo nome
-    const produtosExistentes = await this.produtoRepository.find({});
-
-    const response = new TotalProdutosResponse();
-    response.total = 12;
-    return response;
-  }
-
-  async listarProdutosCategoria(): Promise<ListarProdutosCategoriaResponse> {
-    const list = new ListarProdutosCategoriaResponse();
-    return list;
-  }
-
-  async verificarNome(nome: string) {
-    const usuarioExistente = await this.produtoRepository.findOneBy({
-      nome: nome
-    })
-    if(usuarioExistente) throw new ConflictException("Produto com esse nome já cadastrado!")
-  }
-
   async atualizarProduto(id: number, editarProdutoDto: EditarProdutoDto) {
     const produtoExistente = await this.produtoRepository.findOneBy({
       id: id
     })
 
-    await this.verificarNome(editarProdutoDto.nome)
     try {
       produtoExistente.nome = editarProdutoDto.nome;
       produtoExistente.descricao = editarProdutoDto.descricao;
@@ -110,5 +115,12 @@ export class ProdutoService {
     } catch(e) {
       throw new Error(`Erro ao deletar produto: ${e.message}`);
     }
+  }
+
+  async verificarNome(nome: string) {
+    const usuarioExistente = await this.produtoRepository.findOneBy({
+      nome: nome
+    })
+    if(usuarioExistente) throw new ConflictException("Produto com esse nome já cadastrado!")
   }
 }
