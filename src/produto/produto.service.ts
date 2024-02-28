@@ -60,10 +60,10 @@ export class ProdutoService {
 
   async totalProdutos(): Promise<TotalProdutosResponse> {
     //Lista os usuarios ordenando pelo nome
-    const produtosExistentes = await this.produtoRepository.find({});
+    const qtdProdutos = await this.produtoRepository.count();
 
     const response = new TotalProdutosResponse();
-    response.total = 12;
+    response.total = qtdProdutos;
     return response;
   }
 
