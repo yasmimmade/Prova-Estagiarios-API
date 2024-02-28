@@ -24,5 +24,7 @@ export class EditarProdutoDto {
     valor: string;
     
     @Expose()
-    categoria: Categoria
+    @IsDefined()
+    @IsNumber()
+    categoriaId: number;
 }

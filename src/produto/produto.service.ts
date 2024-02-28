@@ -86,13 +86,13 @@ export class ProdutoService {
       id: id
     })
 
-    produtoExistente.valor = Number(produtoExistente.valor)
     await this.verificarNome(editarProdutoDto.nome)
     try {
       produtoExistente.nome = editarProdutoDto.nome;
       produtoExistente.descricao = editarProdutoDto.descricao;
       produtoExistente.estoque = editarProdutoDto.estoque;
-      // produtoExistente.valor = editarUsuarioDto.valor;
+      // produtoExistente.valor = editarProdutoDto.valor;
+      produtoExistente.categoriaId = editarProdutoDto.categoriaId;
       await this.produtoRepository.save(produtoExistente);
       return { mensagem: "Produto atualizado com sucesso!" }
     } catch (e) {
