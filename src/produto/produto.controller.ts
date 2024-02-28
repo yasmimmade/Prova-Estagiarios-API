@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProdutoService } from './produto.service';
 import { TotalProdutosResponse } from './response/totalProdutos.response';
 import { ListarProdutosCategoriaResponse } from './response/listarProdutosCategoria.response';
 import { ListarProdutosResponse, ProdutoResponse } from './response/listarProdutos.response';
 import { CriarProdutoDto } from './dto/criarProduto.dto';
+import { EditarProdutoDto } from './dto/editarProduto.dto';
 
 @ApiTags('Produto')
 @Controller('produto')
@@ -41,6 +42,14 @@ export class ProdutoController {
   criarProduto(@Body(ValidationPipe) criarProdutoDto: CriarProdutoDto) {
     return this.produtoService.criarProduto(criarProdutoDto);
   }
+
+  @Patch(':id')
+  @ApiResponse({ status: 200 })
+  @ApiBody({ type: ProdutoResponse })
+  editarProduto(@Param('id') id: number, @Body(ValidationPipe) editarProdutoDto: EditarProdutoDto) {
+    return this.produtoService.atualizarProduto(id, editarProdutoDto)
+  }
+
 
   @Delete(':id')
   @ApiResponse({ status: 200 })

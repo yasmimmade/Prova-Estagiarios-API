@@ -15,8 +15,8 @@ export class EditarProdutoDto {
 
     @Expose()
     @IsDefined()
-    @IsString()
-    estoque: string;
+    @IsNumber()
+    estoque: number;
 
     @Expose()
     @IsDefined()
