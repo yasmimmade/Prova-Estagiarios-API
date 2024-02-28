@@ -41,7 +41,7 @@ export class ProdutoService {
   }
 
   async criarProduto(produtoDto: CriarProdutoDto) {
-    const { nome, descricao, estoque, valor } = produtoDto;
+    const { nome, descricao, estoque, valor, categoriaId } = produtoDto;
     await this.verificarNome(nome)
     try {
       const novoProduto = new Produto()
@@ -50,6 +50,7 @@ export class ProdutoService {
       novoProduto.descricao = descricao;
       novoProduto.estoque = estoque;
       novoProduto.valor = valor;
+      novoProduto.categoriaId = categoriaId;
 
       await this.produtoRepository.save(novoProduto)
 

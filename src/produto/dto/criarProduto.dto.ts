@@ -24,5 +24,7 @@ export class CriarProdutoDto {
     valor: number; 
 
     @Expose()
-    categoria: Categoria
+    @IsDefined()
+    @IsNumber()
+    categoriaId: number
 }
