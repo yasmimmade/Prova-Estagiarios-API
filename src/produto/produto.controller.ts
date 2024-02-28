@@ -12,7 +12,7 @@ import { EditarProdutoDto } from './dto/editarProduto.dto';
 export class ProdutoController {
   constructor(private readonly produtoService: ProdutoService) {}
 
-  @Get()
+  @Get('nome')
   @ApiResponse({ status: 200, type: ListarProdutosResponse })
   listarProdutos(): Promise<ListarProdutosResponse> {
     return this.produtoService.listarProdutos()
