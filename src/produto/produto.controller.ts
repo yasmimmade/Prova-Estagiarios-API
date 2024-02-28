@@ -26,7 +26,7 @@ export class ProdutoController {
 
   @Get('categoria')
   @ApiResponse({ status: 200, type: ListarProdutosCategoriaResponse })
-  listarProdutosCategoria(): Promise<ListarProdutosCategoriaResponse> {
+  listarProdutosCategoria() {
     return this.produtoService.listarProdutosCategoria();
   }
 

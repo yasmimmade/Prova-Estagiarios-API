@@ -8,12 +8,15 @@ import { ListarProdutosResponse, ProdutoResponse} from './response/listarProduto
 import { plainToClass } from 'class-transformer';
 import { CriarProdutoDto } from './dto/criarProduto.dto';
 import { EditarProdutoDto } from './dto/editarProduto.dto';
+import { Categoria } from 'src/database/entities/Categoria';
 
 @Injectable()
 export class ProdutoService {
   constructor(
     @InjectRepository(Produto)
     private readonly produtoRepository: Repository<Produto>,
+    @InjectRepository(Categoria)
+    private readonly categoriaRepository: Repository<Categoria>
   ) {}
 
   async listarProdutos(): Promise<ListarProdutosResponse>{
@@ -53,13 +56,19 @@ export class ProdutoService {
     return response
   }
 
-  async listarProdutosCategoria(): Promise<ListarProdutosCategoriaResponse> {
-    const list = new ListarProdutosCategoriaResponse();
-    return list;
+  async listarProdutosCategoria(): Promise<ListarProdutosCategoriaResponse[]> {
+    let categoriasProdutos = await this.categoriaRepository.find({
+      relations: {
+        produtos: true
+      }
+    })
+
+    const response = plainToClass(ListarProdutosCategoriaResponse, categoriasProdutos)
+
+    return response
   }
 
   async totalProdutos(): Promise<TotalProdutosResponse> {
-    //Lista os usuarios ordenando pelo nome
     const qtdProdutos = await this.produtoRepository.count();
 
     const response = new TotalProdutosResponse();
@@ -118,9 +127,9 @@ export class ProdutoService {
   }
 
   async verificarNome(nome: string) {
-    const usuarioExistente = await this.produtoRepository.findOneBy({
+    const produtoExistente = await this.produtoRepository.findOneBy({
       nome: nome
     })
-    if(usuarioExistente) throw new ConflictException("Produto com esse nome já cadastrado!")
+    if(produtoExistente) throw new ConflictException("Produto com esse nome já cadastrado!")
   }
 }
