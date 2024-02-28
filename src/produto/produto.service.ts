@@ -80,16 +80,17 @@ export class ProdutoService {
     if(usuarioExistente) throw new ConflictException("Produto com esse nome já cadastrado!")
   }
 
-  async atualizarProduto(id: number, editarUsuarioDto: EditarProdutoDto) {
+  async atualizarProduto(id: number, editarProdutoDto: EditarProdutoDto) {
     const produtoExistente = await this.produtoRepository.findOneBy({
       id: id
     })
 
-    await this.verificarNome(produtoExistente.nome)
+    produtoExistente.valor = Number(produtoExistente.valor)
+    await this.verificarNome(editarProdutoDto.nome)
     try {
-      produtoExistente.nome = editarUsuarioDto.nome;
-      produtoExistente.descricao = editarUsuarioDto.descricao;
-      // produtoExistente.estoque = editarUsuarioDto.estoque;
+      produtoExistente.nome = editarProdutoDto.nome;
+      produtoExistente.descricao = editarProdutoDto.descricao;
+      produtoExistente.estoque = editarProdutoDto.estoque;
       // produtoExistente.valor = editarUsuarioDto.valor;
       await this.produtoRepository.save(produtoExistente);
       return { mensagem: "Produto atualizado com sucesso!" }
